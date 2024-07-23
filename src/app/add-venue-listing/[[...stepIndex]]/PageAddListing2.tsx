@@ -38,27 +38,27 @@ const PageAddListing2: FC<PageAddListing2Props> = () => {
   const onPlaceChanged = () => {
     if (autocomplete) {
       const place = autocomplete.getPlace();
-
-      if (place.geometry) {
-        const { lat, lng } = place.geometry.location.toJSON();
+  
+      if (place.geometry && place.geometry.location) {
+        const location = place.geometry.location;
+        const { lat, lng } = location.toJSON(); // Ensure location.toJSON() is valid
         const city = place.address_components?.find(component => component.types.includes('locality'))?.long_name || '';
         const state = place.address_components?.find(component => component.types.includes('administrative_area_level_1'))?.short_name || '';
         const country = place.address_components?.find(component => component.types.includes('country'))?.long_name || '';
         const postalCode = place.address_components?.find(component => component.types.includes('postal_code'))?.long_name || '';
-
-        setValue("city",city);
-        setValue("Country",country);
-        setValue("state",state);
-        setValue("latitude",lat.toString());
-        setValue("longitude",lng.toString());
-        setValue("zip_code",postalCode);
-        
+  
+        setValue("city", city);
+        setValue("Country", country);
+        setValue("state", state);
+        setValue("latitude", lat.toString());
+        setValue("longitude", lng.toString());
+        setValue("zip_code", postalCode);
+  
       } else {
         console.log('No place details available');
       }
     }
   }
-
   return (
     <form onSubmit={handleSubmit(onHandleFormSubmit)} className="listingSection__wrap">
 
