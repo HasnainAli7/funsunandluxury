@@ -1,11 +1,13 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { connect } from '@/utils/lib/db';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
-export async function GET(req: { url: string | URL; }) {
+export async function GET(req: NextRequest) {
+ 
   const { searchParams } = new URL(req.url);
+ 
   const session_id = searchParams.get('session_id');
 
   if (!session_id) {
