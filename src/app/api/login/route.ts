@@ -71,9 +71,8 @@ export async function POST(req: NextRequest) {
       } else {
         return NextResponse.json({ message: 'User not found' }, { status: 401 });
       }
-    } catch (error) {
-      console.error('Error during login:', error);
-      return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+    } catch (error:any) {
+      return NextResponse.json({ message:error.message}, { status: 500 });
     } finally {
       await connection.end();
     }
