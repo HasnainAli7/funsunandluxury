@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { jwtVerify, decodeJwt } from 'jose';
 import { JwtPayload } from '@/routers/types';
 
-const secret = new TextEncoder().encode(process.env.JWT_SECRET as string);
+const secret = new TextEncoder().encode("3f173bae5d335b7a7f1e3bb8d3cddb1f69dc1b56ba44dd22e44a149e0da1b0bd1da282105fd333818a88a5cc6e9c7d53782c076ee2394b8211fc55a77b3cf8bd");
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
