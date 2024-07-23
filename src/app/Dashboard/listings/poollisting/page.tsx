@@ -6,13 +6,14 @@ import { FaAngleDoubleLeft, FaAngleDoubleRight } from 'react-icons/fa';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
 import { RootState } from '@/store/store';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
+
 const PoolListingsTable: React.FC = () => {
   const [poolListings, setPoolListings] = useState<PoolListing[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | undefined>(undefined);
   const [filterInput, setFilterInput] = useState<string>('');
-  
+
   const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
@@ -54,9 +55,9 @@ const PoolListingsTable: React.FC = () => {
       {
         Header: 'Actions',
         id: 'actions', // Unique ID to avoid duplication
-        Cell: ({ row }) => (
+        Cell: ({ row }: { row: { original: PoolListing } }) => (
           <Link href={`/Dashboard/listings/pooldetails/${row.original.id}`} passHref>
-            <div  className="btn btn-xs btn-info">
+            <div className="btn btn-xs btn-info">
               More Details
             </div>
           </Link>
@@ -65,12 +66,11 @@ const PoolListingsTable: React.FC = () => {
       { 
         Header: 'Status', 
         accessor: 'Status',
-        Cell: ({ row }) => {
+        Cell: ({ row }: { row: { original: PoolListing } }) => {
           const [status, setStatus] = React.useState(row.original.Status);
           const [statusloading, setstatusLoading] = React.useState(false);
           
-          const handleChange = async (e: { target: { value: any; }; }) => {
-            debugger
+          const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
             const newStatus = e.target.value;
             setStatus(newStatus);
             setstatusLoading(true);      
@@ -80,7 +80,7 @@ const PoolListingsTable: React.FC = () => {
                 headers: {
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({PoolId: row.original.id, Status: newStatus,ModifiedBy:user?.id}),
+                body: JSON.stringify({ PoolId: row.original.id, Status: newStatus, ModifiedBy: user?.id }),
               });
           
               if (!response.ok) {
@@ -88,7 +88,7 @@ const PoolListingsTable: React.FC = () => {
               }
               const result = await response.json();
               toast.success(result.message);
-            } catch (error:any) {
+            } catch (error: any) {
               setStatus(row.original.Status);
               toast.error(error.message as string);
             } finally {
@@ -133,7 +133,7 @@ const PoolListingsTable: React.FC = () => {
     {
       columns,
       data: poolListings,
-      initialState:{ pageIndex:0, pageSize: 5 } as any,
+      initialState: { pageIndex: 0, pageSize: 5 } as any,
     },
     useGlobalFilter, // Hook for global filtering
     useSortBy,
@@ -152,7 +152,7 @@ const PoolListingsTable: React.FC = () => {
   return (
     <div className="container-fluid mt-4">
       <div className="card">
-        <div className="card-header text-white" style={{background:"#000"}}><h3>Pool Listings</h3></div>
+        <div className="card-header text-white" style={{ background: "#000" }}><h3>Pool Listings</h3></div>
         <div className="card-body">
           <div className="mb-3">
             <input
@@ -245,8 +245,6 @@ const PoolListingsTable: React.FC = () => {
           </div>
         </div>
       </div>
-
-    
     </div>
   );
 };

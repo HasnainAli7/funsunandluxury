@@ -52,7 +52,7 @@ const VenueListingsTable: React.FC = () => {
       {
         Header: 'Actions',
         id: 'actions', // Unique ID to avoid duplication
-        Cell: ({ row }) => (
+        Cell: ({ row }: { row: { original: VenueSpace } }) => (
           <Link href={`/Dashboard/listings/venuedetails/${row.original.id}`} passHref>
             <div  className="btn btn-xs btn-info">
               More Details
