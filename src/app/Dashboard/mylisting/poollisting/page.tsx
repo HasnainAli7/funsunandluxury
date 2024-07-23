@@ -50,7 +50,7 @@ const PoolListingsTable: React.FC = () => {
       {
         Header: 'Actions',
         id: 'actions', // Unique ID to avoid duplication
-        Cell: ({ row }: { row: any }) => (
+        Cell: ({ row }: { row: { original: PoolListing } }) => (
           <Link href={`/Dashboard/mylisting/pooldetails/${row.original.id}`} passHref>
             <div className="btn btn-xs btn-info">
               More Details
