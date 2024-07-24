@@ -7,7 +7,19 @@ import { PoolListing } from '@/routers/types';
 
 
 export async function POST(req: NextRequest) {
+
+    req.headers.set('Access-Control-Allow-Credentials', true as any);
+    req.headers.set('Access-Control-Allow-Origin', '*'); // Change '*' to your domain for security
+    req.headers.set('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
+    req.headers.set(
+      'Access-Control-Allow-Headers',
+      'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+    );
+
+    
     try {
+
+       
 
         if (req.method !== 'POST') {
             return NextResponse.json({ message: 'Method not allowed' }, { status: 405 });
