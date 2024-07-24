@@ -7,19 +7,7 @@ import { PoolListing } from '@/routers/types';
 
 
 export async function POST(req: NextRequest) {
-
-    req.headers.set('Access-Control-Allow-Credentials', true as any);
-    req.headers.set('Access-Control-Allow-Origin', '*'); // Change '*' to your domain for security
-    req.headers.set('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    req.headers.set(
-      'Access-Control-Allow-Headers',
-      'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    );
-
-    
     try {
-
-       
 
         if (req.method !== 'POST') {
             return NextResponse.json({ message: 'Method not allowed' }, { status: 405 });
@@ -35,37 +23,37 @@ export async function POST(req: NextRequest) {
         let coverFilePath = '';
         let poolFilePaths: string[] = [];
 
-        const coverImage = formData.get('pool_cover_image');
-        if (!coverImage || !(coverImage instanceof File)) {
-            return NextResponse.json({ error: 'No valid cover image file received.' }, { status: 400 });
-        }
+        // const coverImage = formData.get('pool_cover_image');
+        // if (!coverImage || !(coverImage instanceof File)) {
+        //     return NextResponse.json({ error: 'No valid cover image file received.' }, { status: 400 });
+        // }
 
-        const coverBuffer = Buffer.from(await coverImage.arrayBuffer());
-        const coverFilename = coverImage.name.replaceAll(' ', '_');
+        // const coverBuffer = Buffer.from(await coverImage.arrayBuffer());
+        // const coverFilename = coverImage.name.replaceAll(' ', '_');
 
-        try {
-            await writeFile(path.join(process.cwd(), 'public/assets/', coverFilename), coverBuffer);
-            coverFilePath = "/assets/"+coverFilename;
-        } catch (error) {
-            return NextResponse.json({ error: 'Failed to save cover image file', status: 500 });
-        }
+        // try {
+        //     await writeFile(path.join(process.cwd(), 'public/assets/', coverFilename), coverBuffer);
+        //     coverFilePath = "/assets/"+coverFilename;
+        // } catch (error) {
+        //     return NextResponse.json({ error: 'Failed to save cover image file', status: 500 });
+        // }
 
-        const poolImages = formData.getAll('pool_images');
-        for (const poolImage of poolImages) {
-            if (!(poolImage instanceof File)) {
-                return NextResponse.json({ error: 'Invalid file received in pool images.' }, { status: 400 });
-            }
+        // const poolImages = formData.getAll('pool_images');
+        // for (const poolImage of poolImages) {
+        //     if (!(poolImage instanceof File)) {
+        //         return NextResponse.json({ error: 'Invalid file received in pool images.' }, { status: 400 });
+        //     }
 
-            const poolBuffer = Buffer.from(await poolImage.arrayBuffer());
-            const poolFilename = poolImage.name.replaceAll(' ', '_');
+        //     const poolBuffer = Buffer.from(await poolImage.arrayBuffer());
+        //     const poolFilename = poolImage.name.replaceAll(' ', '_');
 
-            try {
-                await writeFile(path.join(process.cwd(), 'public/assets/', poolFilename), poolBuffer);
-                poolFilePaths.push("/assets/"+poolFilename);
-            } catch (error) {
-                return NextResponse.json({ error: 'Failed to save pool image file', status: 500 });
-            }
-        }
+        //     try {
+        //         await writeFile(path.join(process.cwd(), 'public/assets/', poolFilename), poolBuffer);
+        //         poolFilePaths.push("/assets/"+poolFilename);
+        //     } catch (error) {
+        //         return NextResponse.json({ error: 'Failed to save pool image file', status: 500 });
+        //     }
+        // }
 
         const poolData: Partial<PoolListing> = {
             pool_title: formData.get('pool_title')?.toString() || '',
