@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 
             // Check for existing booking
             const [existingBooking] = await connection.execute(
-                `SELECT * FROM BookingListing 
+                `SELECT * FROM bookinglisting 
                 WHERE BookingDate = ? 
                 AND StoreListingID = ? 
                 AND ListingType = ?`,
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
                 return NextResponse.json({ error: 'Booking already exists for this date and listing type' }, { status: 400 });
             }
 
-            const query = 'INSERT INTO BookingListing ( TotalAdults, TotalChildren, TotalInfants,TotalHours, ListingType, StoreListingID, TotalAmount, BookingDate, CreatedBookingUserID ) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)';
+            const query = 'INSERT INTO bookinglisting ( TotalAdults, TotalChildren, TotalInfants,TotalHours, ListingType, StoreListingID, TotalAmount, BookingDate, CreatedBookingUserID ) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)';
 
             const values = [booking.TotalAdults, booking.TotalChildren, booking.TotalInfants, booking.TotalHours, booking.ListingType, booking.StoreListingID, booking.TotalAmount, booking.BookingDate, booking.CreatedBookingUserID];
 

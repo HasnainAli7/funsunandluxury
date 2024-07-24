@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { connect } from '@/utils/lib/db';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const stripe = new Stripe("sk_test_51N9968DXoT0g7l2j6kiRQalrTG4PhZJufAyagbI4l7okVXnI49ygnpMmhZNQ9E0MDfDIEozBeMNUImQN2tT1NpeK002V7SHymk");
 
 export async function GET(req: NextRequest) {
  

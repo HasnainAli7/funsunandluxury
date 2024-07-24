@@ -12,9 +12,10 @@ export async function POST(req: NextRequest) {
 
     const data: CustomerReview = await req.json();
 
-    const { pool_Id, listing_type, review, rating, createdBy, modifiedBy, status } = data;
+    const { pool_Id,venue_id, listing_type, review, rating, createdBy, modifiedBy, status } = data;
 
-    if (!pool_Id || !listing_type || !review || !rating) {
+    if (!listing_type || !review || !rating) {
+      
         return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
     }
 
@@ -27,9 +28,9 @@ export async function POST(req: NextRequest) {
     try {
 
         const [result] = await connection.execute(`INSERT INTO customer_reviews 
-            (pool_Id, listing_type, review, rating, review_date, createdBy, modifiedBy, createdOn, modifiedOn, status) 
-            VALUES (?, ?, ?, ?, NOW(), ?, ?, NOW(), NOW(), ?)`,
-            [pool_Id, listing_type, review, rating, createdBy, modifiedBy, status]
+            (pool_Id,venue_id, listing_type, review, rating, review_date, createdBy, modifiedBy, createdOn, modifiedOn, status) 
+            VALUES (?,?, ?, ?, ?, NOW(), ?, ?, NOW(), NOW(), ?)`,
+            [pool_Id==0?null:pool_Id,venue_id==0?null:venue_id,listing_type, review, rating, createdBy, modifiedBy, status]
         );
 
         await connection.end();
@@ -38,6 +39,6 @@ export async function POST(req: NextRequest) {
 
     } catch (error: any) {
         await connection.end();
-        return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
