@@ -111,7 +111,7 @@ export async function POST(req: NextRequest) {
 
         try {
             const query = `
-                INSERT INTO PoolListing (
+                INSERT INTO poollisting (
                     pool_title, availability_date, blockout_dates, pool_address, city, state, zip_code,Country,latitude,longitude, phone_number,
                     pool_width, pool_length, pool_depth, vehicles_accommodate, restrooms_residence, restrooms_portable,
                     restrooms_private, restrooms_offsite, parking_lot, street_parking, guest_rate_1_5, guest_rate_6_10,
@@ -246,7 +246,7 @@ export async function PUT(req: NextRequest) {
 
         try {
 
-            const [result] = await connection.execute('UPDATE PoolListing SET Status = ?, modified_by=? WHERE id = ?',[Status,ModifiedBy,PoolId]);
+            const [result] = await connection.execute('UPDATE poollisting SET Status = ?, modified_by=? WHERE id = ?',[Status,ModifiedBy,PoolId]);
         
             await connection.end();
 
