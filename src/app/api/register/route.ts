@@ -1,18 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connect } from '@/utils/lib/db';
-import { Register } from '@/routers/types';
 import bcrypt from 'bcrypt';
+import path from 'path';
+import { writeFile } from 'fs/promises';
+import fs from 'fs';
 
-const validateRequestBody = (data: Register): string | null => {
-    if (!data) return 'Request body is missing';
-    if (!data.firstName) return 'First name is required';
-    if (!data.lastName) return 'Last name is required';
-    if (!data.email) return 'Email is required';
-    if (!data.password) return 'Password is required';
-    if (!data.confirmPassword) return 'Confirm Password is required';
- 
-    return null;
-}
 
 export async function POST(req: NextRequest) {
     if (req.method !== 'POST') {
@@ -20,45 +12,101 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const data: Register = await req.json();
+        // Parse FormData from the request
+        const formData = await req.formData();
+        
+        // Extract form fields
+        const RoleId = formData.get('Registration_Type')?.toString() || '';
+        const firstName = formData.get('firstName')?.toString() || '';
+        const lastName = formData.get('lastName')?.toString() || '';
+        const email = formData.get('email')?.toString() || '';
+        const password = formData.get('password')?.toString() || '';
+        const confirmPassword = formData.get('confirmPassword')?.toString() || '';
+        const description = formData.get('Description')?.toString() || '';
+        const profileImage = formData.get('Profile');
 
-        const validationError = validateRequestBody(data);
-        if (validationError) {
-            return NextResponse.json({ message: validationError }, { status: 400 });
+        // Validate form data
+        if (!firstName || !lastName || !email || !password || !confirmPassword||!RoleId||!description) {
+            return NextResponse.json({ message: 'All required fields must be provided.' }, { status: 400 });
         }
-
+        if (password !== confirmPassword) {
+            return NextResponse.json({ message: 'Passwords do not match.' }, { status: 400 });
+        }
+        
         // Hash the password
-       const hashedPassword = await bcrypt.hash(data.password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Connect to the database
         const connection = await connect();
         if (!connection) {
             return NextResponse.json({ message: 'Database connection error' }, { status: 500 });
         }
 
+        let profileImagePath = '';
+               
+        if (!profileImage || !(profileImage instanceof File)) {
+            return NextResponse.json({ error: 'No valid profile image file received.' }, { status: 400 });
+        }
+
+        const profileBuffer = Buffer.from(await profileImage.arrayBuffer());
+        const profileFilename = profileImage.name.replaceAll(' ', '_');
+
         try {
-            const query = 'INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)';
-            const values = [data.firstName, data.lastName, data.email, hashedPassword];
-            const [result] = await connection.execute(query, values);
+            await writeFile(path.join(process.cwd(), 'public/assets/', profileFilename), profileBuffer);
+            profileImagePath = "/assets/"+profileFilename;
+        } catch (error) {
+
+            return NextResponse.json({ error: 'Failed to save profile image file', status: 500 });
+        }
+
+
+        try {
+            // Insert user into database
+            const query = 'INSERT INTO users (first_name, last_name, email, password, description, Profile_ImagePath) VALUES (?, ?, ?, ?, ?, ?)';
+            const values = [firstName, lastName, email, hashedPassword, description, profileImagePath];
             
-            const UserId= (result as any).insertId;
+            const [result] = await connection.execute(query, values);
+            const userId = (result as any).insertId;
 
-             if(UserId > 0)
-                
-             {
+            if (userId > 0) {
+                // Insert into user_roles table
+                await connection.execute('INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)', [userId,RoleId]);
+            }
 
-                await connection.execute('INSERT INTO user_roles (user_id , role_id ) VALUES (?, ?)', [UserId,2]);
-
-             }
-
-
-            await connection.end();
-
-            return NextResponse.json({ message: 'User registered successfully', userId: (result as any).insertId }, { status: 201 });
+            return NextResponse.json({ message: 'User registered successfully', userId }, { status: 201 });
         } catch (error: any) {
+            console.error('Database error:', error.message);
+            return NextResponse.json({ error: 'Failed to register user' }, { status: 500 });
+        } finally {
             await connection.end();
-            return NextResponse.json({error: error.message }, { status: 500 });
         }
     } catch (error: any) {
-        return NextResponse.json({error: error.message }, { status: 400 });
+        console.error('Request error:', error.message);
+        return NextResponse.json({ error: 'Failed to process request' }, { status: 500 });
     }
 }
+
+
+export async function GET(req: NextRequest) {
+    try {
+       
+        const connection = await connect();
+        if (!connection) {
+            return NextResponse.json({ error: 'Database connection error' }, { status: 500 });
+        }
+
+        try {
+            const query = 'select * from roles where id<>1';
+            const [rows] = await connection.execute(query);
+            
+            return NextResponse.json(rows, { status: 200 });
+        } catch (error) {
+            return NextResponse.json({ error: 'Failed to fetch venue listings' }, { status: 500 });
+        } finally {
+            connection.end();
+        }
+    } catch (error) {
+        return NextResponse.json({ error: 'Failed to process request', status: 500 });
+    }
+}
+

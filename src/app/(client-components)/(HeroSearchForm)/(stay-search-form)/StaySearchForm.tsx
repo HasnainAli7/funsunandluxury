@@ -7,7 +7,6 @@ import ClearDataButton from "@/app/ClientCommons";
 import LocationInput from "../LocationInput";
 import SearchButton from "../SearchButton";
 import StayDatesRangeInput from "./StayDatesRangeInput";
-
 export interface LocationInputProps {
   placeHolder?: string;
   desc?: string;

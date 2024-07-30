@@ -2,25 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+.pac-container {
+    background-color: #fff;
+    position: absolute !important;
+    z-index: 99!important;
+    border-radius: 17px!important;
+    font-family: Arial, sans-serif;
+    -webkit-box-shadow: 0 4px 9px rgba(0, 0, 0, .3)!important;
+    box-shadow: 0 4px 9px rgba(0, 0, 0, .3)!important;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    width: 59% !important;
+    padding: 0;
+    padding-top: -16px!important;
+      /* left: 334px!important;
+      top: 801px!important; */
+}
 
-    .pac-container {
-      background-color: #fff;
-      position: absolute !important;
-      z-index: 99!important;
-      border-radius: 17px!important;
-      font-family: Arial, sans-serif;
-      -webkit-box-shadow: 0 4px 9px rgba(0, 0, 0, .3)!important;
-      box-shadow: 0 4px 9px rgba(0, 0, 0, .3)!important;
-      -webkit-box-sizing: border-box;
-      box-sizing: border-box;
-      overflow: hidden;
-      width: 59% !important;
-      padding: 0;
-      padding-top: -16px!important;
-        left: 334px!important;
-        top: 801px!important;
-  }
-
-  .pac-item {
-    padding: 10px 10px!important;
+.pac-item {
+  padding: 10px 10px!important;
 }

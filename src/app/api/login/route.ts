@@ -25,16 +25,29 @@ export async function POST(req: NextRequest) {
     try {
       // Fetch the user from the database
       const [rows] = await connection.query(`
-        SELECT u.id, u.first_name, u.last_name, u.email, u.password, 
-               GROUP_CONCAT(r.role_name) AS roles, 
-               GROUP_CONCAT(p.permission_name) AS permissions
-        FROM users u
-        LEFT JOIN user_roles ur ON u.id = ur.user_id
-        LEFT JOIN roles r ON ur.role_id = r.id
-        LEFT JOIN role_permissions rp ON r.id = rp.role_id
-        LEFT JOIN permissions p ON rp.permission_id = p.id
-        WHERE u.email = ?
-        GROUP BY u.id
+        SELECT 
+          u.id, 
+          u.first_name, 
+          u.last_name, 
+          u.email, 
+          u.password,
+          u.Profile_ImagePath,
+          GROUP_CONCAT(DISTINCT r.role_name) AS roles, 
+          GROUP_CONCAT(DISTINCT p.permission_name) AS permissions
+      FROM 
+          users u
+      LEFT JOIN 
+          user_roles ur ON u.id = ur.user_id
+      LEFT JOIN 
+          roles r ON ur.role_id = r.id
+      LEFT JOIN 
+          role_permissions rp ON r.id = rp.role_id
+      LEFT JOIN 
+          permissions p ON rp.permission_id = p.id
+         WHERE u.email = ?
+      GROUP BY 
+          u.id, u.first_name, u.last_name, u.email, u.password, u.Profile_ImagePath;
+
       `, [email]);
 
       if (Array.isArray(rows) && rows.length > 0) {
@@ -49,6 +62,7 @@ export async function POST(req: NextRequest) {
             name: user.first_name + ' ' + user.last_name,
             roles: user.roles ? user.roles.split(',') : [],
             permissions: user.permissions ? user.permissions.split(',') : [],
+            Profile_ImagePath:user.Profile_ImagePath
           };
 
           // Generate the JWT token

@@ -351,7 +351,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ params }: any) 
 
         {/* 4 */}
         <div className="flex items-center">
-          <Avatar hasChecked sizeClass="h-10 w-10" radius="rounded-full" />
+          <Avatar hasChecked sizeClass="h-10 w-10" radius="rounded-full"  imgUrl={HostInfo && HostInfo[0] && HostInfo[0]?.Profile_ImagePath || ""} />
           <span className="ml-2.5 text-neutral-500 dark:text-neutral-400">
             Hosted by{" "}
             <span className="text-neutral-900 dark:text-neutral-200 font-medium">
@@ -593,11 +593,11 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ params }: any) 
 
         {/* host */}
         <div className="flex items-center space-x-4">
-          <Avatar
-            hasChecked
+        <Avatar
             hasCheckedClass="w-4 h-4 -top-0.5 right-0.5"
             sizeClass="h-14 w-14"
             radius="rounded-full"
+            imgUrl={HostInfo && HostInfo[0] && HostInfo[0]?.Profile_ImagePath || ""}
           />
           <div>
             <a className="block text-xl font-medium" href="javascript:void(0);">
@@ -616,7 +616,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ params }: any) 
         {/* desc */}
         <span className="block text-neutral-6000 dark:text-neutral-300">
           {
-            HostInfo && HostInfo[0] && HostInfo[0]?.description || ""
+            HostInfo && HostInfo[0] && HostInfo[0]?.Description || ""
           }
         </span>
 

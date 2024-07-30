@@ -18,6 +18,7 @@ export interface User {
   name: string;
   roles: string[];
   permissions: string[];
+  Profile_ImagePath:string;
 }
 
 export interface JwtPayload extends User {
@@ -34,6 +35,11 @@ export interface Register {
   email: string;
   password: string;
   confirmPassword: string;
+  Description:string;
+  Profile:File;
+  Profile_ImagePath:string;
+  Registration_Type:number
+
 }
 
 

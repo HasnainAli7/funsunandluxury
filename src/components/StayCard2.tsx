@@ -19,6 +19,7 @@ const StayCard2: FC<StayCard2Props> = ({ size = "default", className = "" }) => 
   const [venueError, setVenueError] = useState<string | undefined>(undefined);
   const [poolError, setPoolError] = useState<string | undefined>(undefined);
 
+  debugger
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -196,7 +197,7 @@ const StayCard2: FC<StayCard2Props> = ({ size = "default", className = "" }) => 
                   <div className="w-14 border-b border-neutral-100 dark:border-neutral-800" />
                   <div className="flex justify-between items-center">
                     <span className="text-base font-semibold">
-                      ${Number(item.hourly_rate)}{" "}
+                      ${Number(item.guest_rate_1_5)}{" "}
                       <span className="text-sm text-neutral-500 dark:text-neutral-400 font-normal">
                         /hourly
                       </span>

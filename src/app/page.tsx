@@ -15,7 +15,6 @@ import SectionBecomeAnAuthor from "@/components/SectionBecomeAnAuthor";
 import SectionVideos from "@/components/SectionVideos";
 import SectionClientSay from "@/components/SectionClientSay";
 import axios from "axios";
-
 const DEMO_CATS_2: TaxonomyType[] = [
   {
     id: "1",

@@ -31,6 +31,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { StarIcon } from "@heroicons/react/24/solid";
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+
 export interface ListingStayDetailPageProps { }
 
 
@@ -57,6 +58,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ params }: any) 
 
   const user = useSelector((state: RootState) => state.auth.user);
 
+  
   useEffect(() => {
     fetchVenueDetails();
   }, [params.Id]);
@@ -240,7 +242,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ params }: any) 
 
         {/* 4 */}
         <div className="flex items-center">
-          <Avatar hasChecked sizeClass="h-10 w-10" radius="rounded-full" />
+          <Avatar sizeClass="h-10 w-10" radius="rounded-full" imgUrl={HostInfo && HostInfo[0] && HostInfo[0]?.Profile_ImagePath || ""} />
           <span className="ml-2.5 text-neutral-500 dark:text-neutral-400">
             Hosted by{" "}
             <span className="text-neutral-900 dark:text-neutral-200 font-medium">
@@ -478,10 +480,10 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ params }: any) 
         {/* host */}
         <div className="flex items-center space-x-4">
           <Avatar
-            hasChecked
             hasCheckedClass="w-4 h-4 -top-0.5 right-0.5"
             sizeClass="h-14 w-14"
             radius="rounded-full"
+            imgUrl={HostInfo && HostInfo[0] && HostInfo[0]?.Profile_ImagePath || ""}
           />
           <div>
             <a className="block text-xl font-medium" href="javascript:void(0);">
@@ -500,7 +502,7 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ params }: any) 
         {/* desc */}
         <span className="block text-neutral-6000 dark:text-neutral-300">
           {
-            HostInfo && HostInfo[0] && HostInfo[0]?.description || ""
+            HostInfo && HostInfo[0] && HostInfo[0]?.Description || ""
           }
         </span>
 
@@ -565,11 +567,15 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ params }: any) 
         </div>
 
         {/* == */}
-        {/* <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
-        <div>
-          <ButtonSecondary href="/author">See host profile</ButtonSecondary>
-        </div> */}
-      </div>
+        <div className="w-14 border-b border-neutral-200 dark:border-neutral-700"></div>
+        {venueListings && venueListings.length > 0 && venueListings[0].CreatedBy !== user?.id ? (
+          <div>
+            <ButtonPrimary href={`/Dashboard/Messages?venderId=${venueListings[0]?.CreatedBy}`}>
+              Message Host
+            </ButtonPrimary>
+          </div>
+        ) : null}
+       </div>
     );
   };
 
@@ -1157,9 +1163,11 @@ const ListingStayDetailPage: FC<ListingStayDetailPageProps> = ({ params }: any) 
         </div>
 
         {/* SIDEBAR */}
-        <div className="hidden lg:block flex-grow mt-14 lg:mt-0">
-          <div className="sticky top-28">{renderSidebar()}</div>
-        </div>
+        {venueListings && venueListings.length > 0 && venueListings[0].CreatedBy !== user?.id ? (
+          <div className="hidden lg:block flex-grow mt-14 lg:mt-0">
+            <div className="sticky top-28">{renderSidebar()}</div>
+          </div>
+        ):null}
       </main>
     </div>
   );

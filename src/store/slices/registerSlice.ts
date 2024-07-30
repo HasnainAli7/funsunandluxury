@@ -7,6 +7,10 @@ interface RegisterState {
         email: string;
         password: string;
         confirmPassword: string;
+        Description: string;
+        Profile: File | null;
+        Profile_ImagePath: string;
+        Registration_Type: number;
     };
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
@@ -19,6 +23,10 @@ const initialState: RegisterState = {
         email: '',
         password: '',
         confirmPassword: '',
+        Description: '',
+        Profile: null,
+        Profile_ImagePath: '',
+        Registration_Type: 0,
     },
     status: 'idle',
     error: null,
@@ -26,20 +34,16 @@ const initialState: RegisterState = {
 
 export const registerUser = createAsyncThunk(
     'register/registerUser',
-    async (userData: Omit<RegisterState['data'], 'confirmPassword'>, { rejectWithValue }) => {
+    async (formData: FormData, { rejectWithValue }) => {
         try {
             const response = await fetch('/api/register', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
+                body: formData,
             });
-            debugger
+
             if (!response.ok) {
-                debugger
                 const result = await response.json();
-                return rejectWithValue(result.error);
+                return rejectWithValue(result.message || 'An error occurred');
             }
 
             return response.json();
@@ -52,28 +56,23 @@ export const registerUser = createAsyncThunk(
 const registerSlice = createSlice({
     name: 'register',
     initialState,
-    reducers: {
-        setData: (state, action) => {
-            state.data = { ...state.data, ...action.payload };
-        },
-    },
+    reducers:{},
     extraReducers: (builder) => {
         builder
             .addCase(registerUser.pending, (state) => {
                 state.status = 'loading';
                 state.error = null;
             })
-            .addCase(registerUser.fulfilled, (state) => {
+            .addCase(registerUser.fulfilled, (state, action) => {
                 state.status = 'succeeded';
                 state.error = null;
+                state.data = initialState.data; // Reset data on success
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.status = 'failed';
-                state.error = action.error as string;
+                state.error = action.payload as string;
             });
     },
 });
-
-export const { setData } = registerSlice.actions;
 
 export default registerSlice.reducer;
